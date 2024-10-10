@@ -1,0 +1,70 @@
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Assuming `features` and `labels` are already loaded as in previous steps
+
+# Step 1: Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+
+# Step 2: Standardize the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 3: Train a Logistic Regression model
+model = LogisticRegression(max_iter=1000)  # Increase max_iter for convergence
+model.fit(X_train_scaled, y_train)
+
+# Step 4: Make predictions
+y_pred = model.predict(X_test_scaled)
+
+# Step 5: Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy * 100:.2f}%')
+
+# Classification report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# Confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(labels), yticklabels=np.unique(labels))
+plt.title('Confusion Matrix')
+plt.ylabel('True Label')
+plt.xlabel('Predicted Label')
+plt.show()
+
+
+
+
+
+import matplotlib.pyplot as plt
+
+def plot_digit_image(index):
+    """
+    Plots the digit image at a given index from the features and labels.
+    
+    :param index: The index of the digit to plot (0 to len(features)-1)
+    """
+    # Reshape the features into a 16x16 image
+    image = features[index].reshape(16, 16)
+    
+    # Get the corresponding label
+    label = int(labels[index])
+    
+    # Plot the image
+    plt.imshow(image, cmap='gray')
+    plt.title(f'Label: {label}')
+    plt.axis('off')
+    plt.show()
+
+# Example: Plot the image at index 0
+plot_digit_image(0)
+
+# You can plot any other image by calling the function with different indices, e.g., plot_digit_image(5)
