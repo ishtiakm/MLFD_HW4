@@ -11,6 +11,30 @@ import seaborn as sns
 
 # Assuming `features` and `labels` are already loaded as in previous steps
 
+import numpy as np
+
+# Path to the ZipDigits.train file
+file_path = '/mnt/data/ZipDigits.train'
+
+# Load the data from the file
+data = []
+
+# Read the file line by line
+with open(file_path, 'r') as file:
+    for line in file:
+        values = list(map(float, line.split()))  # Convert each line to a list of floats
+        data.append(values)
+
+# Convert the list to a NumPy array for easier manipulation
+data = np.array(data)
+
+# Split the data into labels (first column) and features (remaining columns)
+labels = data[:, 0]      # Labels are the first column
+features = data[:, 1:]   # Features are the remaining columns
+
+# Display the shape of features and labels
+print(f'Features shape: {features.shape}')
+print(f'Labels shape: {labels.shape}')
 
 
 
