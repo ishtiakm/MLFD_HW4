@@ -162,3 +162,42 @@ transformed_X_test = feature_transform(X_test)
 print(transformed_X_train.shape)  # Output should be (5500,)
 print(transformed_X_test.shape)   # Output should be (500,)
 
+
+import numpy as np
+
+def nonlinear_transform(X_train_transformed):
+    """
+    Applies a set of nonlinear transformations to the input array X_train_transformed.
+
+    :param X_train_transformed: numpy array of shape (n_samples, 2), 
+                                where each row represents a pair of features.
+    :return: X_train_nonlin: numpy array with the nonlinear transformations applied.
+    """
+    # Extract the two columns/features from X_train_transformed
+    x1 = X_train_transformed[:, 0]  # First feature
+    x2 = X_train_transformed[:, 1]  # Second feature
+
+    # Apply nonlinear transformations
+    x1_squared = np.square(x1)         # x1^2
+    x2_squared = np.square(x2)         # x2^2
+    x1_cubed = np.power(x1, 3)         # x1^3
+    x2_cubed = np.power(x2, 3)         # x2^3
+    x1_exp = np.exp(x1)                # exp(x1)
+    x2_exp = np.exp(x2)                # exp(x2)
+    x1_sin = np.sin(x1)                # sin(x1)
+    x2_sin = np.sin(x2)                # sin(x2)
+
+    # Combine all transformations into a new feature matrix
+    X_train_nonlin = np.column_stack((x1, x2, x1_squared, x2_squared, x1_cubed, x2_cubed, x1_exp, x2_exp, x1_sin, x2_sin))
+
+    # Return the transformed array
+    return X_train_nonlin
+
+# Example usage:
+# Assuming X_train_transformed has shape (5500, 2)
+X_train_nonlin = nonlinear_transform(X_train_transformed)
+
+# Check the shape of the transformed data
+print(X_train_nonlin.shape)  # Should print (5500, 10), as we've added 8 new features (2 original + 8 nonlinear)
+
+
