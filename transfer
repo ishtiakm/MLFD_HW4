@@ -98,3 +98,67 @@ def plot_digit_image(index):
 plot_digit_image(0)
 
 # You can plot any other image by calling the function with different indices, e.g., plot_digit_image(5)
+
+
+
+import numpy as np
+
+# Function to calculate vertical symmetry
+def calculate_vertical_symmetry(image):
+    left_half = image[:, :8]  # Left half (first 8 columns)
+    right_half = np.fliplr(image[:, 8:])  # Right half, flipped horizontally
+    symmetry = np.mean(np.abs(left_half - right_half))  # Mean absolute difference
+    return symmetry
+
+# Function to calculate horizontal symmetry
+def calculate_horizontal_symmetry(image):
+    top_half = image[:8, :]  # Top half (first 8 rows)
+    bottom_half = np.flipud(image[8:, :])  # Bottom half, flipped vertically
+    symmetry = np.mean(np.abs(top_half - bottom_half))  # Mean absolute difference
+    return symmetry
+
+# Function to calculate the width (using a threshold to determine pixel activation)
+def calculate_width(image, threshold=0.5):
+    # Count non-zero pixels (greater than threshold) along the columns
+    width = np.sum(np.max(image > threshold, axis=0))
+    return width
+
+# Main function to apply feature transform
+def feature_transform(X):
+    """
+    Applies feature transformations to each image in X and returns a 1D numpy array
+    with a single feature value per image.
+    
+    :param X: numpy array of shape (n_samples, 256), where each row is a flattened 16x16 image
+    :return: numpy array of shape (n_samples,) containing one feature value per image
+    """
+    # Initialize list to store the transformed features
+    transformed_features = []
+
+    # Loop over each image (flattened) in X
+    for i in range(X.shape[0]):
+        image = X[i].reshape(16, 16)  # Reshape the 256 feature vector to 16x16
+        
+        # Calculate the feature transform
+        vertical_symmetry = calculate_vertical_symmetry(image)
+        horizontal_symmetry = calculate_horizontal_symmetry(image)
+        width = calculate_width(image)
+        
+        # For simplicity, let's combine these features (you can choose how to combine them)
+        # For this example, we'll just use the width as the feature, but you can customize this
+        feature_value = width
+        
+        # Append the calculated feature to the list
+        transformed_features.append(feature_value)
+
+    # Convert the list to a numpy array and return
+    return np.array(transformed_features)
+
+# Example usage:
+transformed_X_train = feature_transform(X_train)
+transformed_X_test = feature_transform(X_test)
+
+# Check shapes
+print(transformed_X_train.shape)  # Output should be (5500,)
+print(transformed_X_test.shape)   # Output should be (500,)
+
