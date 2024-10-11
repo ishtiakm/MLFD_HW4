@@ -201,3 +201,47 @@ X_train_nonlin = nonlinear_transform(X_train_transformed)
 print(X_train_nonlin.shape)  # Should print (5500, 10), as we've added 8 new features (2 original + 8 nonlinear)
 
 
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
+def svm_fit_and_test(X_train_transformed, y_train, X_test_transformed, y_test):
+    """
+    Trains an SVM on the nonlinear transformed training data and tests its accuracy.
+    
+    :param X_train_transformed: Transformed training data (numpy array)
+    :param y_train: Training labels (numpy array)
+    :param X_test_transformed: Transformed test data (numpy array)
+    :param y_test: Test labels (numpy array)
+    :return: accuracy: The accuracy of the SVM on the test data.
+    """
+    # Apply nonlinear transform to both train and test data
+    X_train_nonlin = nonlinear_transform(X_train_transformed)
+    X_test_nonlin = nonlinear_transform(X_test_transformed)
+    
+    # Initialize the SVM classifier
+    svm_model = SVC(kernel='rbf')  # RBF kernel (default), can use others like 'linear', 'poly', 'sigmoid'
+    
+    # Fit the SVM model on the training data
+    svm_model.fit(X_train_nonlin, y_train)
+    
+    # Predict the labels on the test set
+    y_pred = svm_model.predict(X_test_nonlin)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    # Return the accuracy
+    return accuracy
+
+# Example usage:
+# Assuming X_train_transformed and X_test_transformed are (5500, 2) and (500, 2)
+# Assuming y_train and y_test are the labels for the training and test sets
+
+# Fit SVM and get accuracy
+accuracy = svm_fit_and_test(X_train_transformed, y_train, X_test_transformed, y_test)
+
+# Output the accuracy
+print(f"SVM Accuracy: {accuracy * 100:.2f}%")
+
+
+
