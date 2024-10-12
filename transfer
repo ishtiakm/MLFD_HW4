@@ -1,247 +1,35 @@
-
-
-
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-# Assuming `features` and `labels` are already loaded as in previous steps
-
 import numpy as np
 
-# Path to the ZipDigits.train file
-file_path = '/mnt/data/ZipDigits.train'
-
-# Load the data from the file
-data = []
-
-# Read the file line by line
-with open(file_path, 'r') as file:
-    for line in file:
-        values = list(map(float, line.split()))  # Convert each line to a list of floats
-        data.append(values)
-
-# Convert the list to a NumPy array for easier manipulation
-data = np.array(data)
-
-# Split the data into labels (first column) and features (remaining columns)
-labels = data[:, 0]      # Labels are the first column
-features = data[:, 1:]   # Features are the remaining columns
-
-# Display the shape of features and labels
-print(f'Features shape: {features.shape}')
-print(f'Labels shape: {labels.shape}')
-
-
-
-# Step 1: Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
-
-# Step 2: Standardize the features
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# Step 3: Train a Logistic Regression model
-model = LogisticRegression(max_iter=1000)  # Increase max_iter for convergence
-model.fit(X_train_scaled, y_train)
-
-# Step 4: Make predictions
-y_pred = model.predict(X_test_scaled)
-
-# Step 5: Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {accuracy * 100:.2f}%')
-
-# Classification report
-print("Classification Report:")
-print(classification_report(y_test, y_pred))
-
-# Confusion matrix
-conf_matrix = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(10, 7))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(labels), yticklabels=np.unique(labels))
-plt.title('Confusion Matrix')
-plt.ylabel('True Label')
-plt.xlabel('Predicted Label')
-plt.show()
-
-
-
-
-
-import matplotlib.pyplot as plt
-
-def plot_digit_image(index):
+def filter_relevant_data(X_train, y_train, X_test, y_test):
     """
-    Plots the digit image at a given index from the features and labels.
-    
-    :param index: The index of the digit to plot (0 to len(features)-1)
+    Filters the dataset to keep only the samples corresponding to the digits 1 and 5.
+
+    :param X_train: Training data (numpy array of shape (n_samples_train, n_features))
+    :param y_train: Training labels (numpy array of shape (n_samples_train,))
+    :param X_test: Test data (numpy array of shape (n_samples_test, n_features))
+    :param y_test: Test labels (numpy array of shape (n_samples_test,))
+    :return: X_train_f, y_train_f, X_test_f, y_test_f: Filtered training and test sets
+             containing only samples where the labels are 1 or 5.
     """
-    # Reshape the features into a 16x16 image
-    image = features[index].reshape(16, 16)
-    
-    # Get the corresponding label
-    label = int(labels[index])
-    
-    # Plot the image
-    plt.imshow(image, cmap='gray')
-    plt.title(f'Label: {label}')
-    plt.axis('off')
-    plt.show()
+    # Filter the training data for labels 1 and 5
+    train_filter = np.isin(y_train, [1, 5])
+    X_train_f = X_train[train_filter]
+    y_train_f = y_train[train_filter]
 
-# Example: Plot the image at index 0
-plot_digit_image(0)
+    # Filter the test data for labels 1 and 5
+    test_filter = np.isin(y_test, [1, 5])
+    X_test_f = X_test[test_filter]
+    y_test_f = y_test[test_filter]
 
-# You can plot any other image by calling the function with different indices, e.g., plot_digit_image(5)
-
-
-
-import numpy as np
-
-# Function to calculate vertical symmetry
-def calculate_vertical_symmetry(image):
-    left_half = image[:, :8]  # Left half (first 8 columns)
-    right_half = np.fliplr(image[:, 8:])  # Right half, flipped horizontally
-    symmetry = np.mean(np.abs(left_half - right_half))  # Mean absolute difference
-    return symmetry
-
-# Function to calculate horizontal symmetry
-def calculate_horizontal_symmetry(image):
-    top_half = image[:8, :]  # Top half (first 8 rows)
-    bottom_half = np.flipud(image[8:, :])  # Bottom half, flipped vertically
-    symmetry = np.mean(np.abs(top_half - bottom_half))  # Mean absolute difference
-    return symmetry
-
-# Function to calculate the width (using a threshold to determine pixel activation)
-def calculate_width(image, threshold=0.5):
-    # Count non-zero pixels (greater than threshold) along the columns
-    width = np.sum(np.max(image > threshold, axis=0))
-    return width
-
-# Main function to apply feature transform
-def feature_transform(X):
-    """
-    Applies feature transformations to each image in X and returns a 1D numpy array
-    with a single feature value per image.
-    
-    :param X: numpy array of shape (n_samples, 256), where each row is a flattened 16x16 image
-    :return: numpy array of shape (n_samples,) containing one feature value per image
-    """
-    # Initialize list to store the transformed features
-    transformed_features = []
-
-    # Loop over each image (flattened) in X
-    for i in range(X.shape[0]):
-        image = X[i].reshape(16, 16)  # Reshape the 256 feature vector to 16x16
-        
-        # Calculate the feature transform
-        vertical_symmetry = calculate_vertical_symmetry(image)
-        horizontal_symmetry = calculate_horizontal_symmetry(image)
-        width = calculate_width(image)
-        
-        # For simplicity, let's combine these features (you can choose how to combine them)
-        # For this example, we'll just use the width as the feature, but you can customize this
-        feature_value = width
-        
-        # Append the calculated feature to the list
-        transformed_features.append(feature_value)
-
-    # Convert the list to a numpy array and return
-    return np.array(transformed_features)
+    # Return the filtered data
+    return X_train_f, y_train_f, X_test_f, y_test_f
 
 # Example usage:
-transformed_X_train = feature_transform(X_train)
-transformed_X_test = feature_transform(X_test)
+# Assuming X_train, y_train, X_test, and y_test are already defined
+X_train_f, y_train_f, X_test_f, y_test_f = filter_relevant_data(X_train, y_train, X_test, y_test)
 
-# Check shapes
-print(transformed_X_train.shape)  # Output should be (5500,)
-print(transformed_X_test.shape)   # Output should be (500,)
-
-
-import numpy as np
-
-def nonlinear_transform(X_train_transformed):
-    """
-    Applies a set of nonlinear transformations to the input array X_train_transformed.
-
-    :param X_train_transformed: numpy array of shape (n_samples, 2), 
-                                where each row represents a pair of features.
-    :return: X_train_nonlin: numpy array with the nonlinear transformations applied.
-    """
-    # Extract the two columns/features from X_train_transformed
-    x1 = X_train_transformed[:, 0]  # First feature
-    x2 = X_train_transformed[:, 1]  # Second feature
-
-    # Apply nonlinear transformations
-    x1_squared = np.square(x1)         # x1^2
-    x2_squared = np.square(x2)         # x2^2
-    x1_cubed = np.power(x1, 3)         # x1^3
-    x2_cubed = np.power(x2, 3)         # x2^3
-    x1_exp = np.exp(x1)                # exp(x1)
-    x2_exp = np.exp(x2)                # exp(x2)
-    x1_sin = np.sin(x1)                # sin(x1)
-    x2_sin = np.sin(x2)                # sin(x2)
-
-    # Combine all transformations into a new feature matrix
-    X_train_nonlin = np.column_stack((x1, x2, x1_squared, x2_squared, x1_cubed, x2_cubed, x1_exp, x2_exp, x1_sin, x2_sin))
-
-    # Return the transformed array
-    return X_train_nonlin
-
-# Example usage:
-# Assuming X_train_transformed has shape (5500, 2)
-X_train_nonlin = nonlinear_transform(X_train_transformed)
-
-# Check the shape of the transformed data
-print(X_train_nonlin.shape)  # Should print (5500, 10), as we've added 8 new features (2 original + 8 nonlinear)
-
-
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score
-
-def svm_fit_and_test(X_train_transformed, y_train, X_test_transformed, y_test):
-    """
-    Trains an SVM on the nonlinear transformed training data and tests its accuracy.
-    
-    :param X_train_transformed: Transformed training data (numpy array)
-    :param y_train: Training labels (numpy array)
-    :param X_test_transformed: Transformed test data (numpy array)
-    :param y_test: Test labels (numpy array)
-    :return: accuracy: The accuracy of the SVM on the test data.
-    """
-    # Apply nonlinear transform to both train and test data
-    X_train_nonlin = nonlinear_transform(X_train_transformed)
-    X_test_nonlin = nonlinear_transform(X_test_transformed)
-    
-    # Initialize the SVM classifier
-    svm_model = SVC(kernel='rbf')  # RBF kernel (default), can use others like 'linear', 'poly', 'sigmoid'
-    
-    # Fit the SVM model on the training data
-    svm_model.fit(X_train_nonlin, y_train)
-    
-    # Predict the labels on the test set
-    y_pred = svm_model.predict(X_test_nonlin)
-    
-    # Calculate accuracy
-    accuracy = accuracy_score(y_test, y_pred)
-    
-    # Return the accuracy
-    return accuracy
-
-# Example usage:
-# Assuming X_train_transformed and X_test_transformed are (5500, 2) and (500, 2)
-# Assuming y_train and y_test are the labels for the training and test sets
-
-# Fit SVM and get accuracy
-accuracy = svm_fit_and_test(X_train_transformed, y_train, X_test_transformed, y_test)
-
-# Output the accuracy
-print(f"SVM Accuracy: {accuracy * 100:.2f}%")
-
-
-
+# Checking the shapes of the filtered datasets
+print(f"Filtered X_train shape: {X_train_f.shape}")
+print(f"Filtered y_train shape: {y_train_f.shape}")
+print(f"Filtered X_test shape: {X_test_f.shape}")
+print(f"Filtered y_test shape: {y_test_f.shape}")
