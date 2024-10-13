@@ -33,3 +33,67 @@ print(f"Filtered X_train shape: {X_train_f.shape}")
 print(f"Filtered y_train shape: {y_train_f.shape}")
 print(f"Filtered X_test shape: {X_test_f.shape}")
 print(f"Filtered y_test shape: {y_test_f.shape}")
+
+
+Solving environment: | warning  libmamba Added empty dependency for problem type SOLVER_RULE_UPDATE
+failed
+
+LibMambaUnsatisfiableError: Encountered problems while solving:
+  - nothing provides cuda-cudart >=11.7,<11.8 needed by pytorch-cuda-11.7-h778d358_3
+
+Could not solve for environment specs
+The following packages are incompatible
+├─ pin-1 is installable and it requires
+│  └─ python 3.13.* , which can be installed;
+└─ torchvision is not installable because there are no viable options
+   ├─ torchvision [0.10.0|0.10.1|...|0.9.1] would require
+   │  └─ python >=3.6,<3.7.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.10.0|0.10.1|...|0.9.1] would require
+   │  └─ cudatoolkit >=11.1,<11.2 , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.10.0|0.10.1|...|0.9.1] would require
+   │  └─ python >=3.7,<3.8.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.10.0|0.10.1|...|0.9.1] would require
+   │  └─ python >=3.8,<3.9.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.10.0|0.10.1|...|0.8.2] would require
+   │  └─ python >=3.9,<3.10.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.11.3|0.12.0|...|0.19.1] would require
+   │  └─ python >=3.10,<3.11.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision 0.12.0 would require
+   │  └─ cudatoolkit >=11.5,<11.6 , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.13.0|0.13.1] would require
+   │  └─ cudatoolkit >=11.6,<11.7 , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.13.0|0.13.1] would require
+   │  └─ python_abi 3.7.* *_cp37m, which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.13.0|0.13.1] would require
+   │  └─ python_abi 3.8.* *_cp38, which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.13.0|0.13.1|0.8.2|0.9.0|0.9.1] would require
+   │  └─ python_abi 3.9.* *_cp39, which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.14.0|0.14.1] would require
+   │  └─ pytorch-cuda 11.6.* , which requires
+   │     └─ cuda 11.6.* , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.14.0|0.14.1|0.15.0|0.15.2] would require
+   │  └─ pytorch-cuda 11.7.*  but there are no viable options
+   │     ├─ pytorch-cuda 11.7 would require
+   │     │  └─ cuda-cudart >=11.7,<11.8 , which does not exist (perhaps a missing channel);
+   │     └─ pytorch-cuda 11.7 would require
+   │        └─ cuda 11.7.* , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.15.0|0.15.2|...|0.19.1] would require
+   │  └─ pytorch-cuda 11.8.*  but there are no viable options
+   │     ├─ pytorch-cuda 11.8 would require
+   │     │  └─ cuda-cudart >=11.8,<12.0 , which does not exist (perhaps a missing channel);
+   │     └─ pytorch-cuda 11.8 would require
+   │        └─ cuda 11.8.* , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.15.2|0.16.0|...|0.19.1] would require
+   │  └─ python >=3.11,<3.12.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.16.0|0.16.1|...|0.19.1] would require
+   │  └─ pytorch-cuda 12.1.* , which requires
+   │     └─ cuda-cudart >=12.1,<12.2 , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.17.0|0.17.1|...|0.19.1] would require
+   │  └─ python >=3.12,<3.13.0a0 , which conflicts with any installable versions previously reported;
+   ├─ torchvision [0.19.0|0.19.1] would require
+   │  └─ pytorch-cuda 12.4.* , which requires
+   │     └─ libcublas >=12.4.2.65,<12.4.5.8 , which does not exist (perhaps a missing channel);
+   ├─ torchvision [0.2.0|0.2.1|0.6.1] would require
+   │  └─ python >=3.5,<3.6.0a0 , which conflicts with any installable versions previously reported;
+   └─ torchvision [0.2.0|0.2.1|0.3.0|0.4.0|0.4.2] would require
+      └─ python >=2.7,<2.8.0a0 , which conflicts with any installable versions previously reported.
