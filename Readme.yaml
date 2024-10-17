@@ -1,0 +1,14 @@
+#Go to the project directory and create a new conda environment with the #required packages installed:
+conda env create -f environment.yml
+
+#activate the environment using following command:
+conda activate mlfd6
+
+
+##Execute the python code:
+python handwritten.py
+
+
+######################
+#OR Execute the setup script to setup the environment and execute file:
+bash setup.sh
